@@ -429,7 +429,8 @@ public class TestCacheOnWrite {
   }
 
   private void testCachingDataBlocksDuringCompactionInternals(boolean useTags,
-    boolean cacheBlocksOnCompaction, long cacheBlocksOnCompactionThreshold) throws IOException, InterruptedException {
+    boolean cacheBlocksOnCompaction, long cacheBlocksOnCompactionThreshold)
+    throws IOException, InterruptedException {
     // create a localConf
     boolean localValue = conf.getBoolean(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_KEY,
       false);
@@ -563,7 +564,8 @@ public class TestCacheOnWrite {
   }
 
   @Test
-  public void testCachingDataBlocksThresholdDuringCompaction() throws IOException, InterruptedException {
+  public void testCachingDataBlocksThresholdDuringCompaction()
+    throws IOException, InterruptedException {
     testCachingDataBlocksDuringCompactionInternals(false, true, CACHE_COMPACTION_HIGH_THRESHOLD);
     testCachingDataBlocksDuringCompactionInternals(false, true, CACHE_COMPACTION_LOW_THRESHOLD);
   }
