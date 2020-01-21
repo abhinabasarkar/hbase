@@ -88,14 +88,12 @@ public class CacheConfig {
       "hbase.rs.cachecompactedblocksonwrite";
 
   /**
-   * Configuration key to determine total size in bytes of compacted files beyond which we do not cache blocks on compaction
+   * Configuration key to determine total size in bytes of compacted files beyond which we do not
+   * cache blocks on compaction
    */
   public static final String CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY =
-      "hbase.rs.cachecompactedblocksonwritethreshold";
+      "hbase.rs.cachecompactedblocksonwrite.threshold";
 
-  /**
-   * Configuration key to determine threshold beyond which cache on compaction should not work
-   */
   public static final String DROP_BEHIND_CACHE_COMPACTION_KEY =
       "hbase.hfile.drop.behind.compaction";
 
@@ -305,20 +303,6 @@ public class CacheConfig {
   }
 
   /**
-   * Disable cache on write including:
-   * cacheDataOnWrite
-   * cacheIndexesOnWrite
-   * cacheBloomsOnWrite
-   */
-  public void disableCacheOnWrite() {
-    this.cacheDataOnWrite = false;
-    this.cacheIndexesOnWrite = false;
-    this.cacheBloomsOnWrite = false;
-  }
-
-
-
-  /**
    * @return true if index blocks should be written to the cache when an HFile
    *         is written, false if not
    */
@@ -448,12 +432,14 @@ public class CacheConfig {
   }
 
   private long getCacheCompactedBlocksOnWriteThreshold(Configuration conf) {
-    long cacheCompactedBlocksOnWriteThreshold = conf.getLong(CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY,
-      DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
+    long cacheCompactedBlocksOnWriteThreshold = conf
+      .getLong(CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY,
+        DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
 
     if (cacheCompactedBlocksOnWriteThreshold < 0) {
-      LOG.warn("cacheCompactedBlocksOnWriteThreshold value :" + cacheCompactedBlocksOnWriteThreshold
-        + "is less than 0, resetting it to: " + DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
+      LOG.warn(
+        "cacheCompactedBlocksOnWriteThreshold value : {} is less than 0, resetting it to: {}",
+        cacheCompactedBlocksOnWriteThreshold, DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
       cacheCompactedBlocksOnWriteThreshold = DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD;
     }
 

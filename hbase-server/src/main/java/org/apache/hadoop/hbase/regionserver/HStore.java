@@ -1128,7 +1128,7 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
   // compaction
   public StoreFileWriter createWriterInTmp(long maxKeyCount, Compression.Algorithm compression,
       boolean isCompaction, boolean includeMVCCReadpoint, boolean includesTag,
-      boolean shouldDropBehind, long totalCompactedFileSize) throws IOException {
+      boolean shouldDropBehind, long totalCompactedFilesSize) throws IOException {
     final CacheConfig writerCacheConf;
     if (isCompaction) {
       // Don't cache data on write on compactions, unless specifically configured to do so
@@ -1139,7 +1139,7 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
       // if data blocks are to be cached on write
       // during compaction, we should forcefully
       // cache index and bloom blocks as well
-      if (cacheCompactedBlocksOnWrite && totalCompactedFileSize <= cacheConf
+      if (cacheCompactedBlocksOnWrite && totalCompactedFilesSize <= cacheConf
         .getCacheCompactedBlocksOnWriteThreshold()) {
         writerCacheConf.enableCacheOnWrite();
         if (!cacheOnWriteLogged) {
@@ -1149,12 +1149,14 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
           cacheOnWriteLogged = true;
         }
       } else {
-        writerCacheConf.disableCacheOnWrite();
-        if (totalCompactedFileSize > cacheConf.getCacheCompactedBlocksOnWriteThreshold()) {
+        writerCacheConf.setCacheDataOnWrite(false);
+        if (totalCompactedFilesSize > cacheConf.getCacheCompactedBlocksOnWriteThreshold()) {
           // checking condition once again for logging
-          LOG.debug("Setting data on write as false as total size of compacted files "
-            + totalCompactedFileSize + "is greater than cache compacted blocks on write threshold "
-            + cacheConf.getCacheCompactedBlocksOnWriteThreshold());
+          LOG.debug(
+            "For Store {}, setting cacheCompactedBlocksOnWrite as false as total size of compacted "
+              + "files - {}, is greater than cacheCompactedBlocksOnWriteThreshold - {}",
+            getColumnFamilyName(), totalCompactedFilesSize,
+            cacheConf.getCacheCompactedBlocksOnWriteThreshold());
         }
       }
     } else {
