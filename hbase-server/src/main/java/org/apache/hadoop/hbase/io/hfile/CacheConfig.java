@@ -303,6 +303,18 @@ public class CacheConfig {
   }
 
   /**
+   * Disable cache on write including:
+   * cacheDataOnWrite
+   * cacheIndexesOnWrite
+   * cacheBloomsOnWrite
+   */
+  public void disableCacheOnWrite() {
+    this.cacheDataOnWrite = false;
+    this.cacheIndexesOnWrite = false;
+    this.cacheBloomsOnWrite = false;
+  }
+
+  /**
    * @return true if index blocks should be written to the cache when an HFile
    *         is written, false if not
    */
