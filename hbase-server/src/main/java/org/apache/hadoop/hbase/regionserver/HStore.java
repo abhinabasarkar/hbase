@@ -1149,7 +1149,7 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
           cacheOnWriteLogged = true;
         }
       } else {
-        writerCacheConf.setCacheDataOnWrite(false);
+        writerCacheConf.disableCacheOnWrite();
         if (totalCompactedFilesSize > cacheConf.getCacheCompactedBlocksOnWriteThreshold()) {
           // checking condition once again for logging
           LOG.debug(

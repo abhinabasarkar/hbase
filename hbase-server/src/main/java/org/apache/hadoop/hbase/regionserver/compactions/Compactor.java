@@ -130,8 +130,8 @@ public abstract class Compactor<T extends CellSink> {
     public int maxTagsLength = 0;
     /** Min SeqId to keep during a major compaction **/
     public long minSeqIdToKeep = 0;
-    /** Total file size of the compacted files **/
-    public long totalCompactedFileSize = 0;
+    /** Total size of the compacted files **/
+    public long totalCompactedFilesSize = 0;
   }
 
   /**
@@ -170,7 +170,7 @@ public abstract class Compactor<T extends CellSink> {
       Map<byte[], byte[]> fileInfo = r.loadFileInfo();
 
       // calculate the total size of the compacted files
-      fd.totalCompactedFileSize += r.length();
+      fd.totalCompactedFilesSize += r.length();
 
       byte[] tmp = null;
       // Get and set the real MVCCReadpoint for bulk loaded files, which is the
@@ -268,7 +268,7 @@ public abstract class Compactor<T extends CellSink> {
     // See HBASE-8166, HBASE-12600, and HBASE-13389.
     return store
       .createWriterInTmp(fd.maxKeyCount, this.compactionCompression, true, fd.maxMVCCReadpoint > 0,
-        fd.maxTagsLength > 0, shouldDropBehind, fd.totalCompactedFileSize);
+        fd.maxTagsLength > 0, shouldDropBehind, fd.totalCompactedFilesSize);
   }
 
   private ScanInfo preCompactScannerOpen(CompactionRequestImpl request, ScanType scanType,

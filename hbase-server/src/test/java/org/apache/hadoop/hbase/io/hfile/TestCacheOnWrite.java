@@ -522,7 +522,7 @@ public class TestCacheOnWrite {
         "\ncacheBlocksOnCompaction: "
         + cacheBlocksOnCompaction + "\n";
 
-      if(cacheOnCompactAndNonBucketCache && cacheBlocksOnCompactionThreshold > 0) {
+      if (cacheOnCompactAndNonBucketCache && cacheBlocksOnCompactionThreshold > 0) {
         if (cacheBlocksOnCompactionThreshold == CACHE_COMPACTION_HIGH_THRESHOLD) {
           assertTrue(assertErrorMessage, dataBlockCached);
           assertTrue(assertErrorMessage, bloomBlockCached);
