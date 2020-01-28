@@ -109,6 +109,7 @@ public class CacheConfig {
   public static final boolean DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE = false;
   public static final boolean DROP_BEHIND_CACHE_COMPACTION_DEFAULT = true;
   public static final long DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD = Long.MAX_VALUE;
+
   /**
    * Whether blocks should be cached on read (default is on if there is a
    * cache but this can be turned off on a per-family or per-request basis).

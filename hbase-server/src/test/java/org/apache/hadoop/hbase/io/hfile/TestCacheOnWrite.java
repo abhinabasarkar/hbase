@@ -434,11 +434,11 @@ public class TestCacheOnWrite {
     // create a localConf
     boolean localValue = conf.getBoolean(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_KEY,
       false);
-    long localThreshold = conf.getLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY,
+    long localCacheCompactedBlocksThreshold = conf.getLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY,
       CacheConfig.DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
-    boolean localBloomCacheValue = conf.getBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY,
+    boolean localCacheBloomBlocksValue = conf.getBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY,
       CacheConfig.DEFAULT_CACHE_BLOOMS_ON_WRITE);
-    boolean localIndexCacheValue = conf.getBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY,
+    boolean localCacheIndexBlocksValue = conf.getBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY,
       CacheConfig.DEFAULT_CACHE_INDEXES_ON_WRITE);
 
     try {
@@ -536,13 +536,13 @@ public class TestCacheOnWrite {
         } else {
           assertFalse(assertErrorMessage, dataBlockCached);
 
-          if (localBloomCacheValue) {
+          if (localCacheBloomBlocksValue) {
             assertTrue(assertErrorMessage, bloomBlockCached);
           } else {
             assertFalse(assertErrorMessage, bloomBlockCached);
           }
 
-          if (localIndexCacheValue) {
+          if (localCacheIndexBlocksValue) {
             assertTrue(assertErrorMessage, indexBlockCached);
           } else {
             assertFalse(assertErrorMessage, indexBlockCached);
@@ -562,9 +562,9 @@ public class TestCacheOnWrite {
     } finally {
       // reset back
       conf.setBoolean(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_KEY, localValue);
-      conf.setLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY, localThreshold);
-      conf.setBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY, localBloomCacheValue);
-      conf.setBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY, localIndexCacheValue);
+      conf.setLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY, localCacheCompactedBlocksThreshold);
+      conf.setBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY, localCacheBloomBlocksValue);
+      conf.setBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY, localCacheIndexBlocksValue);
     }
   }
 
