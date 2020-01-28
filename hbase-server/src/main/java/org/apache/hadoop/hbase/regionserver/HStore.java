@@ -1129,7 +1129,7 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
   public StoreFileWriter createWriterInTmp(long maxKeyCount, Compression.Algorithm compression,
       boolean isCompaction, boolean includeMVCCReadpoint, boolean includesTag,
       boolean shouldDropBehind, long totalCompactedFilesSize) throws IOException {
-    // creating cache config for each new writer
+    // creating new cache config for each new writer
     final CacheConfig writerCacheConf = new CacheConfig(cacheConf);
     if (isCompaction) {
       // Don't cache data on write on compactions, unless specifically configured to do so
