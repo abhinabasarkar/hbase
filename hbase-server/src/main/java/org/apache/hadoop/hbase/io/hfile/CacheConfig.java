@@ -289,7 +289,6 @@ public class CacheConfig {
     this.cacheDataOnWrite = cacheDataOnWrite;
   }
 
-
   /**
    * Enable cache on write including:
    * cacheDataOnWrite
@@ -300,18 +299,6 @@ public class CacheConfig {
     this.cacheDataOnWrite = true;
     this.cacheIndexesOnWrite = true;
     this.cacheBloomsOnWrite = true;
-  }
-
-  /**
-   * Disable cache on write including:
-   * cacheDataOnWrite
-   * cacheIndexesOnWrite
-   * cacheBloomsOnWrite
-   */
-  public void disableCacheOnWrite() {
-    this.cacheDataOnWrite = false;
-    this.cacheIndexesOnWrite = false;
-    this.cacheBloomsOnWrite = false;
   }
 
   /**
