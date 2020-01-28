@@ -435,6 +435,11 @@ public class TestCacheOnWrite {
       false);
     long localThreshold = conf.getLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY,
       CacheConfig.DEFAULT_CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD);
+    boolean localBloomCacheValue = conf.getBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY,
+      CacheConfig.DEFAULT_CACHE_BLOOMS_ON_WRITE);
+    boolean localIndexCacheValue = conf.getBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY,
+      CacheConfig.DEFAULT_CACHE_INDEXES_ON_WRITE);
+
     try {
       // Set the conf if testing caching compacted blocks on write
       conf.setBoolean(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_KEY,
@@ -529,8 +534,18 @@ public class TestCacheOnWrite {
           assertTrue(assertErrorMessage, indexBlockCached);
         } else {
           assertFalse(assertErrorMessage, dataBlockCached);
-          assertFalse(assertErrorMessage, bloomBlockCached);
-          assertFalse(assertErrorMessage, indexBlockCached);
+
+          if (localBloomCacheValue) {
+            assertTrue(assertErrorMessage, bloomBlockCached);
+          } else {
+            assertFalse(assertErrorMessage, bloomBlockCached);
+          }
+
+          if (localIndexCacheValue) {
+            assertTrue(assertErrorMessage, indexBlockCached);
+          } else {
+            assertFalse(assertErrorMessage, indexBlockCached);
+          }
         }
       } else {
         assertEquals(assertErrorMessage, cacheOnCompactAndNonBucketCache, dataBlockCached);
@@ -547,6 +562,8 @@ public class TestCacheOnWrite {
       // reset back
       conf.setBoolean(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_KEY, localValue);
       conf.setLong(CacheConfig.CACHE_COMPACTED_BLOCKS_ON_WRITE_THRESHOLD_KEY, localThreshold);
+      conf.setBoolean(CacheConfig.CACHE_BLOOM_BLOCKS_ON_WRITE_KEY, localBloomCacheValue);
+      conf.setBoolean(CacheConfig.CACHE_INDEX_BLOCKS_ON_WRITE_KEY, localIndexCacheValue);
     }
   }
 
