@@ -1129,11 +1129,11 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
   public StoreFileWriter createWriterInTmp(long maxKeyCount, Compression.Algorithm compression,
       boolean isCompaction, boolean includeMVCCReadpoint, boolean includesTag,
       boolean shouldDropBehind, long totalCompactedFilesSize) throws IOException {
-    final CacheConfig writerCacheConf;
+    // creating cache config for each new writer
+    final CacheConfig writerCacheConf = new CacheConfig(cacheConf);
     if (isCompaction) {
       // Don't cache data on write on compactions, unless specifically configured to do so
       // Cache only when total file size remains lower than configured threshold
-      writerCacheConf = new CacheConfig(cacheConf);
       final boolean cacheCompactedBlocksOnWrite =
         cacheConf.shouldCacheCompactedBlocksOnWrite();
       // if data blocks are to be cached on write
@@ -1149,7 +1149,7 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
           cacheOnWriteLogged = true;
         }
       } else {
-        writerCacheConf.disableCacheOnWrite();
+        writerCacheConf.setCacheDataOnWrite(false);
         if (totalCompactedFilesSize > cacheConf.getCacheCompactedBlocksOnWriteThreshold()) {
           // checking condition once again for logging
           LOG.debug(
@@ -1160,7 +1160,6 @@ public class HStore implements Store, HeapSize, StoreConfigInformation,
         }
       }
     } else {
-      writerCacheConf = cacheConf;
       final boolean shouldCacheDataOnWrite = cacheConf.shouldCacheDataOnWrite();
       if (shouldCacheDataOnWrite) {
         writerCacheConf.enableCacheOnWrite();
