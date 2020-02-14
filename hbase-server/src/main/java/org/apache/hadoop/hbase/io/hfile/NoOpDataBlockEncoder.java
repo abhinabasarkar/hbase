@@ -51,8 +51,10 @@ public class NoOpDataBlockEncoder implements HFileDataBlockEncoder {
       DataOutputStream out) throws IOException {
     NoneEncodingState state = (NoneEncodingState) encodingCtx
         .getEncodingState();
+    int posBeforeEncode = out.size();
     NoneEncoder encoder = state.encoder;
-    encoder.write(cell);
+    int size = encoder.write(cell);
+    state.bookKeepingPostCellEncode(size, out.size() - posBeforeEncode);
   }
 
   @Override
