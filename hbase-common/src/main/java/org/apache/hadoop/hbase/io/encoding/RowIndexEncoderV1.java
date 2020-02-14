@@ -45,6 +45,8 @@ public class RowIndexEncoderV1 {
         startOffset = out.size();
       }
       rowsOffsetBAOS.writeInt(out.size() - startOffset);
+      // added for the int written in the previous line
+      context.getEncodingState().encodedDataSizeWritten += 4;
     }
     lastCell = cell;
     return encoder.write(cell);

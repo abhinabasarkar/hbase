@@ -52,7 +52,7 @@ public interface DataBlockEncoder {
    * Encodes a KeyValue.
    * @return unencoded kv size written
    */
-  int encode(Cell cell, HFileBlockEncodingContext encodingCtx, DataOutputStream out)
+  void encode(Cell cell, HFileBlockEncodingContext encodingCtx, DataOutputStream out)
       throws IOException;
 
   /**

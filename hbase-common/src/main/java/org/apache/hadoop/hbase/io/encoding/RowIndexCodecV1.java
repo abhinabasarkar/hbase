@@ -79,12 +79,14 @@ public class RowIndexCodecV1 extends AbstractDataBlockEncoder {
   }
 
   @Override
-  public int encode(Cell cell, HFileBlockEncodingContext encodingCtx,
+  public void encode(Cell cell, HFileBlockEncodingContext encodingCtx,
       DataOutputStream out) throws IOException {
     RowIndexEncodingState state = (RowIndexEncodingState) encodingCtx
         .getEncodingState();
     RowIndexEncoderV1 encoder = state.encoder;
-    return encoder.write(cell);
+    int posBeforeEncode = out.size();
+    int size = encoder.write(cell);
+    state.bookKeepingPostCellEncode(size, out.size() - posBeforeEncode);
   }
 
   @Override
