@@ -48,7 +48,7 @@ public class EncodingState {
     }
   }
 
-  public void bookKeepingPostCellEncode(int unencodedCellSizeWritten, int encodedCellSizeWritten) {
+  public void postCellEncode(int unencodedCellSizeWritten, int encodedCellSizeWritten) {
     this.unencodedDataSizeWritten += unencodedCellSizeWritten;
     this.encodedDataSizeWritten += encodedCellSizeWritten;
   }

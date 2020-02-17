@@ -1131,7 +1131,7 @@ abstract class BufferedDataBlockEncoder extends AbstractDataBlockEncoder {
     EncodingState state = encodingCtx.getEncodingState();
     int posBeforeEncode = out.size();
     int encodedKvSize = internalEncode(cell, (HFileBlockDefaultEncodingContext) encodingCtx, out);
-    state.bookKeepingPostCellEncode(encodedKvSize, out.size() - posBeforeEncode);
+    state.postCellEncode(encodedKvSize, out.size() - posBeforeEncode);
   }
 
   public abstract int internalEncode(Cell cell, HFileBlockDefaultEncodingContext encodingCtx,

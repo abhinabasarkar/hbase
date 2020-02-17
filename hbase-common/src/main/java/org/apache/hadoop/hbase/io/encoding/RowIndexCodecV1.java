@@ -86,7 +86,7 @@ public class RowIndexCodecV1 extends AbstractDataBlockEncoder {
     RowIndexEncoderV1 encoder = state.encoder;
     int posBeforeEncode = out.size();
     int size = encoder.write(cell);
-    state.bookKeepingPostCellEncode(size, out.size() - posBeforeEncode);
+    state.postCellEncode(size, out.size() - posBeforeEncode);
   }
 
   @Override

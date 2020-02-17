@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.KeyValueUtil;
 import org.apache.hadoop.hbase.io.ByteArrayOutputStream;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class RowIndexEncoderV1 {
       }
       rowsOffsetBAOS.writeInt(out.size() - startOffset);
       // added for the int written in the previous line
-      context.getEncodingState().encodedDataSizeWritten += 4;
+      context.getEncodingState().postCellEncode(0, Bytes.SIZEOF_INT);
     }
     lastCell = cell;
     return encoder.write(cell);
