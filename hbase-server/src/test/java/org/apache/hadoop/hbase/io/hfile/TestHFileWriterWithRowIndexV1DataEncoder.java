@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-@Category({ IOTests.class, MediumTests.class})
+@Category({ IOTests.class, MediumTests.class })
 public class TestHFileWriterWithRowIndexV1DataEncoder {
   @ClassRule
   public static final HBaseClassTestRule CLASS_RULE =
@@ -50,20 +50,18 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
   @Test
   public void testBlockCountWritten() throws IOException {
     Path hfilePath = new Path(TEST_UTIL.getDataTestDir(), "testHFileFormatV3");
-    final int entryCount = 1000;
+    final int entryCount = 10000;
     writeDataAndReadFromHFile(hfilePath, entryCount);
   }
 
   private void writeDataAndReadFromHFile(Path hfilePath, int entryCount) throws IOException {
-    HFileContext context = new HFileContextBuilder()
-      .withBlockSize(1024)
-      .withDataBlockEncoding(dataBlockEncoding)
-      .withCellComparator(CellComparatorImpl.COMPARATOR).build();
+    HFileContext context =
+      new HFileContextBuilder().withBlockSize(1024).withDataBlockEncoding(dataBlockEncoding)
+        .withCellComparator(CellComparatorImpl.COMPARATOR).build();
     CacheConfig cacheConfig = new CacheConfig(conf);
-    HFile.Writer writer = new HFile.WriterFactory(conf, cacheConfig)
-      .withPath(fs, hfilePath)
-      .withFileContext(context)
-      .create();
+    HFile.Writer writer =
+      new HFile.WriterFactory(conf, cacheConfig).withPath(fs, hfilePath).withFileContext(context)
+        .create();
 
     List<KeyValue> keyValues = new ArrayList<>(entryCount);
 
@@ -72,15 +70,19 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
     FSDataInputStream fsdis = fs.open(hfilePath);
 
     long fileSize = fs.getFileStatus(hfilePath).getLen();
-    FixedFileTrailer trailer =
-      FixedFileTrailer.readFromStream(fsdis, fileSize);
+    FixedFileTrailer trailer = FixedFileTrailer.readFromStream(fsdis, fileSize);
 
-    Assert.assertEquals(3, trailer.getMajorVersion());
-    Assert.assertEquals(entryCount, trailer.getEntryCount());
-    System.out.println(trailer.getDataIndexCount());
+    // HBASE-23788
+    // kv size = 24 bytes
+    // per row encoded data written = (4 (Row index) + 24 (Cell size) + 1 (MVCC)) bytes = 29 bytes
+    // creating block size of (29 * 36) bytes = 1044 bytes
+    // Number of blocks = ceil((29 * 10000) / 1044) = 278
+    // Without the patch it would have produced 244 blocks
+    Assert.assertEquals(278, trailer.getDataIndexCount());
   }
 
-  private void writeKeyValues(int entryCount, HFile.Writer writer, List<KeyValue> keyValues) throws IOException {
+  private void writeKeyValues(int entryCount, HFile.Writer writer, List<KeyValue> keyValues)
+    throws IOException {
     for (int i = 0; i < entryCount; ++i) {
       byte[] keyBytes = intToBytes(i);
 
@@ -94,7 +96,7 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
     writer.close();
   }
 
-  private byte[] intToBytes( final int i ) {
+  private byte[] intToBytes(final int i) {
     ByteBuffer bb = ByteBuffer.allocate(4);
     bb.putInt(i);
     return bb.array();
