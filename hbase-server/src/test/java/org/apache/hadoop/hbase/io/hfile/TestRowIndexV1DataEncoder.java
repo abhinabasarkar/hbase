@@ -21,7 +21,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 @Category({ IOTests.class, MediumTests.class })
 public class TestRowIndexV1DataEncoder {
   @ClassRule
