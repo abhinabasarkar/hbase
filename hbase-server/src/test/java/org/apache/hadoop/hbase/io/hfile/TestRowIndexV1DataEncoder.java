@@ -66,11 +66,13 @@ public class TestRowIndexV1DataEncoder {
     FixedFileTrailer trailer = FixedFileTrailer.readFromStream(fsdis, fileSize);
 
     // HBASE-23788
-    // kv size = 24 bytes
+    // kv size = 24 bytes, block size = 1024 bytes
     // per row encoded data written = (4 (Row index) + 24 (Cell size) + 1 (MVCC)) bytes = 29 bytes
     // creating block size of (29 * 36) bytes = 1044 bytes
     // Number of blocks = ceil((29 * 10000) / 1044) = 278
     // Without the patch it would have produced 244 blocks (each block of 1236 bytes)
+    // Earlier this would create blocks ~20% greater than the block size of 1024 bytes
+    // After this patch actual block size is ~2% greater than the block size of 1024 bytes
     Assert.assertEquals(278, trailer.getDataIndexCount());
   }
 
