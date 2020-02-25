@@ -25,13 +25,10 @@ import org.slf4j.LoggerFactory;
 
 
 @Category({ IOTests.class, MediumTests.class })
-public class TestHFileWriterWithRowIndexV1DataEncoder {
+public class TestRowIndexV1DataEncoder {
   @ClassRule
   public static final HBaseClassTestRule CLASS_RULE =
-    HBaseClassTestRule.forClass(TestHFileWriterWithRowIndexV1DataEncoder.class);
-
-  private static final Logger LOG =
-    LoggerFactory.getLogger(TestHFileWriterWithRowIndexV1DataEncoder.class);
+    HBaseClassTestRule.forClass(TestRowIndexV1DataEncoder.class);
 
   private static final HBaseTestingUtility TEST_UTIL = new HBaseTestingUtility();
 
@@ -50,10 +47,10 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
   public void testBlockCountWritten() throws IOException {
     Path hfilePath = new Path(TEST_UTIL.getDataTestDir(), "testHFileFormatV3");
     final int entryCount = 10000;
-    writeDataAndReadFromHFile(hfilePath, entryCount);
+    writeDataToHFile(hfilePath, entryCount);
   }
 
-  private void writeDataAndReadFromHFile(Path hfilePath, int entryCount) throws IOException {
+  private void writeDataToHFile(Path hfilePath, int entryCount) throws IOException {
     HFileContext context =
       new HFileContextBuilder().withBlockSize(1024).withDataBlockEncoding(dataBlockEncoding)
         .withCellComparator(CellComparatorImpl.COMPARATOR).build();
@@ -76,7 +73,7 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
     // per row encoded data written = (4 (Row index) + 24 (Cell size) + 1 (MVCC)) bytes = 29 bytes
     // creating block size of (29 * 36) bytes = 1044 bytes
     // Number of blocks = ceil((29 * 10000) / 1044) = 278
-    // Without the patch it would have produced 244 blocks
+    // Without the patch it would have produced 244 blocks (each block of 1236 bytes)
     Assert.assertEquals(278, trailer.getDataIndexCount());
   }
 
@@ -85,7 +82,6 @@ public class TestHFileWriterWithRowIndexV1DataEncoder {
     for (int i = 0; i < entryCount; ++i) {
       byte[] keyBytes = intToBytes(i);
 
-      // A random-length random value.
       byte[] valueBytes = new byte[0];
       KeyValue keyValue = new KeyValue(keyBytes, null, null, valueBytes);
 
