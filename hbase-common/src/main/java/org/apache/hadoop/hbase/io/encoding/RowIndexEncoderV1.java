@@ -39,18 +39,21 @@ public class RowIndexEncoderV1 {
     this.context = encodingCtx;
   }
 
-  public int write(Cell cell) throws IOException {
+  public void write(Cell cell) throws IOException {
     // checkRow uses comparator to check we are writing in order.
+    int extraBytesForRowIndex = 0;
+
     if (!checkRow(cell)) {
       if (startOffset < 0) {
         startOffset = out.size();
       }
       rowsOffsetBAOS.writeInt(out.size() - startOffset);
       // added for the int written in the previous line
-      context.getEncodingState().postCellEncode(0, Bytes.SIZEOF_INT);
+      extraBytesForRowIndex = Bytes.SIZEOF_INT;
     }
     lastCell = cell;
-    return encoder.write(cell);
+    int size = encoder.write(cell);
+    context.getEncodingState().postCellEncode(size, size + extraBytesForRowIndex);
   }
 
   protected boolean checkRow(final Cell cell) throws IOException {
